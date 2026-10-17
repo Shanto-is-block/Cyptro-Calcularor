@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Profit & ROI Calculator - Web3 Tool</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0b0f19; color: #f1f5f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .calculator-card { width: 100%; max-width: 480px; background: #111827; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #1f2937; }
+        h2 { text-align: center; color: #38bdf8; margin-bottom: 5px; font-size: 22px; }
+        .subtitle { text-align: center; font-size: 12px; color: #9ca3af; margin-bottom: 25px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: #93c5fd; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #374151; border-radius: 8px; background: #0b0f19; color: #fff; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.2s; }
+        input:focus, select:focus { border-color: #38bdf8; }
+        button { width: 100%; padding: 12px; background: #38bdf8; color: #0b0f19; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        button:hover { background: #0ea5e9; }
+        .result-box { margin-top: 20px; background: #0b0f19; padding: 15px; border-radius: 10px; border-left: 4px solid #10b981; display: none; }
+        .result-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .result-item span { color: #9ca3af; }
+        .highlight { color: #10b981; font-weight: bold; }
+        .loss { color: #ef4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>Crypto Profit & ROI Calculator</h2>
+    <div class="subtitle">Calculate your potential crypto investment returns instantly</div>
+
+    <div class="input-group">
+        <label>Initial Investment ($ USD):</label>
+        <input type="number" id="invested_amount" placeholder="e.g., 500" value="500">
+    </div>
+
+    <div class="input-group">
+        <label>Buying Price per Token ($):</label>
+        <input type="number" id="buy_price" placeholder="e.g., 0.05" value="0.05" step="0.0001">
+    </div>
+
+    <div class="input-group">
+        <label>Selling / Target Price per Token ($):</label>
+        <input type="number" id="sell_price" placeholder="e.g., 0.25" value="0.25" step="0.0001">
+    </div>
+
+    <button onclick="calculateProfit()">Calculate Profit</button>
+
+    <div class="result-box" id="result_box">
+        <div class="result-item"><span>Tokens Purchased:</span> <b id="res_tokens">0</b></div>
+        <div class="result-item"><span>Final Value:</span> <b id="res_value">$0.00</b></div>
+        <div class="result-item"><span>Net Profit / Loss:</span> <b id="res_profit">$0.00</b></div>
+        <div class="result-item"><span>ROI Percentage:</span> <b id="res_roi">0%</b></div>
+    </div>
+</div>
+
+<script>
+    function calculateProfit() {
+        const invested = parseFloat(document.getElementById('invested_amount').value);
+        const buyPrice = parseFloat(document.getElementById('buy_price').value);
+        const sellPrice = parseFloat(document.getElementById('sell_price').value);
+
+        if(isNaN(invested) || isNaN(buyPrice) || isNaN(sellPrice) || buyPrice <= 0 || invested <= 0) {
+            alert("দয়া করে সঠিক সংখ্যা ইনপুট দিন!");
+            return;
+        }
+
+        const tokens = invested / buyPrice;
+        const finalValue = tokens * sellPrice;
+        const netProfit = finalValue - invested;
+        const roi = (netProfit / invested) * 100;
+
+        document.getElementById('res_tokens').innerText = tokens.toLocaleString(undefined, {maximumFractionDigits: 2});
+        document.getElementById('res_value').innerText = "$" + finalValue.toLocaleString(undefined, {maximumFractionDigits: 2});
+        
+        const profitElem = document.getElementById('res_profit');
+        profitElem.innerText = "$" + netProfit.toLocaleString(undefined, {maximumFractionDigits: 2});
+        profitElem.className = netProfit >= 0 ? "highlight" : "loss";
+
+        const roiElem = document.getElementById('res_roi');
+        roiElem.innerText = roi.toFixed(2) + "%";
+        roiElem.className = roi >= 0 ? "highlight" : "loss";
+
+        document.getElementById('result_box').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
